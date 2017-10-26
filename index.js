@@ -36,29 +36,45 @@ function generateRangeFromMinMaxItems (items) {
 function intersec (inputSet, negativeSet) {
   const mergeNegativeItems = generateRangeFromMinMaxItems(negativeSet)
   let seenItem = {}
-  let collection = []
-  let idx = 0
-  for (const input of inputSet) {
-    const min = input[0]
-    const max = input[1] || input [0]
-    const range = compact(generateRangeItems(min, max))
-    const rangeLength = range.length
-    for (var i = 0; i < rangeLength; i++) {
-      const testItem = range[i]
-      if (mergeNegativeItems.includes(testItem)) {
-        continue
-      } else {
-        if (!seenItem.hasOwnProperty(testItem)) {
-          collection[idx++] = testItem
-          seenItem[testItem] = true
-        }
-      }
-    }
-  }
+  let collection = [ 7, 2, 1, 8, 6, 3, 5, 4]
+  // let idx = 0
+  // for (const input of inputSet) {
+  //   const min = input[0]
+  //   const max = input[1] || input [0]
+  //   const range = compact(generateRangeItems(min, max))
+  //   const rangeLength = range.length
+  //   for (var i = 0; i < rangeLength; i++) {
+  //     const testItem = range[i]
+  //     if (mergeNegativeItems.includes(testItem)) {
+  //       continue
+  //     } else {
+  //       if (!seenItem.hasOwnProperty(testItem)) {
+  //         collection[idx++] = testItem
+  //         seenItem[testItem] = true
+  //       }
+  //     }
+  //   }
+  // }
 
   // sorting
-  
-
+  console.log('==== before === ', collection)
+  var collength = collection.length
+  var pivorIdx = collength - 1
+  var pivotValue = collection[pivorIdx]
+  var i = -1
+  for (var j = 0; j < pivorIdx; j++) {
+    if (collection[j] > pivotValue) {
+      continue
+    }
+    if (collection[j] < pivotValue) {
+      i++
+      var currentItem = collection[j]
+      var previousItem = collection[i]
+      collection[j] = previousItem
+      collection[i] = currentItem
+    }
+  }
+  console.log('==== after === ', collection)
 }
 
 /// expect tests
@@ -78,8 +94,8 @@ let negativeSet = []
 
 console.log(' ======= 2. ===========')
 inputSet = [
-  [ 3, 15 ],
-  [ 2, 20 ],
+  [ 15, 20 ],
+  [ 1, 15 ],
   [ 5, 10 ]
 ]
 negativeSet = [
