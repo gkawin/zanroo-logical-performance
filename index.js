@@ -62,6 +62,29 @@ function generateRangeFromMinMaxItems (items) {
   return uniq(merge(collection))
 }
 
+function groupConsecutiveWithRange (arr) {
+  if (arr.length <= 1) return arr
+  const len = arr.length
+  let result = []
+  let temp = []
+  let difference
+  for (let i = 0; i < len; i++) {
+    const item = arr[i]
+    if (difference !== (item - i)) {
+      if (difference !== undefined) {
+        result.push(temp)
+        temp = []
+      }
+      difference = item - i
+    }
+    temp.push(arr[i])
+  }
+  if (temp.length) {
+    result.push(temp)
+  }
+  return result
+}
+
 function main (inputSet, negativeSet) {
   const mergeNegativeItems = generateRangeFromMinMaxItems(negativeSet)
   let seenItem = {}
@@ -84,7 +107,8 @@ function main (inputSet, negativeSet) {
       }
     }
   }
-  collection = sort(collection)
+  collection = groupConsecutiveWithRange(sort(collection))
+
   return collection
 }
 
@@ -105,13 +129,13 @@ let negativeSet = []
 
 console.log(' ======= 2. ===========')
 inputSet = [
-  [ 15, 20 ],
-  [ 1, 15 ],
+  [ 3, 15 ],
+  [ 2, 20 ],
   [ 5, 10 ]
 ]
 negativeSet = [
   [ 3, 5 ],
-  [ 8, 10]
+  [ 8, 10 ]
 ]
 console.log(`[[2], [6,7], [11,20]]`, '--- result ---', main(inputSet, negativeSet))
 
