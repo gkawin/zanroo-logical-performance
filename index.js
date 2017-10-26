@@ -22,21 +22,51 @@ function uniq(arr) {
   return result
 }
 
-function intersec (inputSet, negativeSet) {
-  function generateRangeFromMinMaxItems (items) {
-    let collection = []
-    let idx = 0
-    for (const item of items) {
-      const max = item[1] || item[0]
-      const min = item[0]
-      collection[idx++] = compact(generateRangeItems(min, max))
-    }
-    return uniq(merge(collection))
+function generateRangeFromMinMaxItems (items) {
+  let collection = []
+  let idx = 0
+  for (const item of items) {
+    const max = item[1] || item[0]
+    const min = item[0]
+    collection[idx++] = compact(generateRangeItems(min, max))
   }
-  const mergeNegativeItems = generateRangeFromMinMaxItems(negativeSet)
-  const mergeInputItems = generateRangeFromMinMaxItems(inputSet)
+  return uniq(merge(collection))
+}
 
-  console.log(result)
+function intersec (inputSet, negativeSet) {
+  const mergeNegativeItems = generateRangeFromMinMaxItems(negativeSet)
+  let seenItem = {}
+
+  for (const input of inputSet) {
+    const min = input[0]
+    const max = input[1] || input [0]
+    const range = compact(generateRangeItems(min, max))
+    const rangeLength = range.length
+    let result = []
+    let resultIdx = 0
+    for (var i = 0; i < rangeLength; i++) {
+      const testItem = range[i]
+      if (mergeNegativeItems.includes(testItem)) {
+        continue
+      } else {
+        if (!seenItem.hasOwnProperty(testItem)) {
+          result[resultIdx++] = testItem
+          seenItem[testItem] = true
+        }
+      }
+    }
+
+    //debug
+    console.log(result)
+    // console.log('min', result[0])
+    // console.log('max', result[(result.length - 1)])
+    const rlength = result.length
+    for (var i = 0; i < rlength; i++) {
+      const item = result[i]
+    }
+  }
+
+  // console.log(mergeNegativeItems)
   //
   // for (const inputs of inputSet) {
   //   const min = inputs[0]
@@ -56,17 +86,18 @@ function intersec (inputSet, negativeSet) {
 let inputSet = []
 let negativeSet = []
 
-console.log(' ======= 1. ===========')
-inputSet = [
-  [ 1, 5 ],
-  [ 2, 10 ]
-]
-negativeSet = [
-  [ 3, 5 ],
-]
+// console.log(' ======= 1. ===========')
+// inputSet = [
+//   [ 1, 5 ],
+//   [ 2, 20 ]
+// ]
+// negativeSet = [
+//   [ 3, 7 ],
+// ]
 // console.log('[[1,2], [8,20]]', '--- result ---', )
-console.log(intersec(inputSet, negativeSet))
+// intersec(inputSet, negativeSet)
 // //
+
 // console.log(' ======= 2. ===========')
 // inputSet = [
 //   [ 3, 15 ],
@@ -78,7 +109,7 @@ console.log(intersec(inputSet, negativeSet))
 //   [ 8, 10]
 // ]
 // console.log(`[[2], [6,7], [11,20]]`, '--- result ---', intersec(inputSet, negativeSet))
-//
+
 // console.log(' ======= 3. ===========')
 // inputSet = [
 //   [ 1, 7 ],
@@ -93,6 +124,14 @@ console.log(intersec(inputSet, negativeSet))
 // console.log(`[[1,5], [12,29], [51,100]]`, '--- result ---', intersec(inputSet, negativeSet))
 //
 // console.log(' ======= 4. ===========')
-// inputSet = [ [ 1, 7 ], [ 10, 20 ], [ 25, 100 ] ]
-// negativeSet = [ [ 2, 5 ], [ 11, 21 ], [ 30, 50 ] ]
-// console.log(`[[1], [6,7], [10], [25,29], [51,100]]`, '--- result ---', intersec(inputSet, negativeSet))
+inputSet = [
+  [ 1, 7 ],
+  [ 10, 20 ],
+  [ 25, 100 ],
+]
+negativeSet = [
+  [ 2, 5 ],
+  [ 11, 21 ],
+  [ 30, 50 ]
+]
+console.log(`[[1], [6,7], [10], [25,29], [51,100]]`, '--- result ---', intersec(inputSet, negativeSet))
