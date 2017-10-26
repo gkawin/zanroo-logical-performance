@@ -1,0 +1,14 @@
+{
+  "name": "zanroo-candidate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kawin Glomjai <g.kawin@live.com>",
+  "license": "ISC",
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
