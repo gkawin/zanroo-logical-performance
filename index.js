@@ -62,7 +62,7 @@ function intersec (inputSet, negativeSet) {
   var pivorIdx = collength - 1
   var pivotValue = collection[pivorIdx]
   var i = -1
-  for (var j = 0; j < pivorIdx; j++) {
+  for (var j = 0; j <= pivorIdx; j++) {
     if (collection[j] > pivotValue) {
       continue
     }
@@ -72,6 +72,11 @@ function intersec (inputSet, negativeSet) {
       var previousItem = collection[i]
       collection[j] = previousItem
       collection[i] = currentItem
+    }
+    if (j === pivorIdx) {
+      const temp = collection[i+1]
+      collection[i+1] = pivotValue
+      collection[pivorIdx] = temp
     }
   }
   console.log('==== after === ', collection)
