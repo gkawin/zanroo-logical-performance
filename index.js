@@ -106,37 +106,25 @@ function groupConsecutiveWithRange (arr) {
 }
 
 function main (inputSet, negativeSet) {
-  const mergeNegativeItems = generateRangeFromMinMaxItems(negativeSet)
-  let seenItem = {}
-  let collection = []
-  let idx = 0
-  for (const input of inputSet) {
-    const min = input[0]
-    const max = input[1] || input [0]
-    //generate chuncked input items
-    const range = compact(generateRangeItems(min, max))
-    const rangeLength = range.length
-    for (var i = 0; i < rangeLength; i++) {
-      const testItem = range[i]
-      if (mergeNegativeItems.includes(testItem)) {
-        continue
-      } else {
-        if (!seenItem.hasOwnProperty(testItem)) {
-          collection[idx++] = testItem
-          seenItem[testItem] = true
-        }
-      }
+  const mergedNegativeItems = generateRangeFromMinMaxItems(negativeSet)
+  const mergedInputItems = new Set(generateRangeFromMinMaxItems(inputSet))
+  const len = mergedNegativeItems.length
+  outer:
+  for (var i = 0; i < len; i++) {
+    const negative = mergedNegativeItems[i]
+    if (mergedInputItems.has(negative)) {
+      mergedInputItems.delete(negative)
+      continue outer
     }
   }
-  collection = groupConsecutiveWithRange(sort(collection))
 
-  return collection
+  return groupConsecutiveWithRange(sort(uniq([...mergedInputItems])))
 }
 
 /// expect tests
 let inputSet = []
 let negativeSet = []
-
+//
 console.log(' ======= 1. ===========')
 inputSet = [
   [ 1, 5 ],
@@ -146,8 +134,8 @@ negativeSet = [
   [ 3, 7 ],
 ]
 console.log('[[1,2], [8,20]]', '--- result ---', main(inputSet, negativeSet))
+// //
 //
-
 console.log(' ======= 2. ===========')
 inputSet = [
   [ 3, 15 ],
