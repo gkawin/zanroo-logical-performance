@@ -13,23 +13,34 @@ function compact (array) {
 }
 
 function generateRangeItems (min, max) {
+  if (!min || !max) return []
   console.time('generateRangeItems')
-  const a = Array.from({ length: (max + 1) }, (v, i) => (i < min) ? undefined : i)
+  const arr = Array.from({ length: (max + 1) }, (v, i) => (i < min) ? undefined : i)
   console.timeEnd('generateRangeItems')
-  return a
+  return arr
 }
 
 function merge (items) {
   console.time('merge')
-  const a = [].concat.apply([], items)
+  const arr = [].concat.apply([], items)
   console.timeEnd('merge')
-  return a
+  return arr
 }
 
 function uniq(arr) {
+  // Set iterator is store the unique item. and the performance better than filter and indexOf.
+  if (arr.length <= 1) return arr
   console.time('uniq')
-  let seen = {}
-  const result = arr.filter((item) => seen.hasOwnProperty(item) ? false : (seen[item] = true))
+  const len = arr.length
+  let seen = new Set()
+  let result = []
+  outer:
+  for (let i = 0; i < len; i++) {
+    const item = arr[i]
+    if (seen.has(item)) continue outer
+    seen.add(item)
+    result.push(item)
+  }
   console.timeEnd('uniq')
   return result
 }
@@ -62,6 +73,14 @@ function generateRangeFromMinMaxItems (items) {
   return uniq(merge(collection))
 }
 
+function findHiLow (arr) {
+  if (!arr) return []
+  const len = arr.length
+  const min = arr[0]
+  const max = arr[len-1]
+  return len === 1 ? [min] : [min, max]
+}
+
 function groupConsecutiveWithRange (arr) {
   if (arr.length <= 1) return arr
   const len = arr.length
@@ -72,15 +91,16 @@ function groupConsecutiveWithRange (arr) {
     const item = arr[i]
     if (difference !== (item - i)) {
       if (difference !== undefined) {
-        result.push(temp)
+        result.push(findHiLow(temp))
         temp = []
       }
       difference = item - i
     }
-    temp.push(arr[i])
+    temp.push(item)
   }
+  //push last groupped consecutive item
   if (temp.length) {
-    result.push(temp)
+    result.push(findHiLow(temp))
   }
   return result
 }
@@ -93,6 +113,7 @@ function main (inputSet, negativeSet) {
   for (const input of inputSet) {
     const min = input[0]
     const max = input[1] || input [0]
+    //generate chuncked input items
     const range = compact(generateRangeItems(min, max))
     const rangeLength = range.length
     for (var i = 0; i < rangeLength; i++) {
@@ -116,16 +137,16 @@ function main (inputSet, negativeSet) {
 let inputSet = []
 let negativeSet = []
 
-// console.log(' ======= 1. ===========')
-// inputSet = [
-//   [ 1, 5 ],
-//   [ 2, 20 ]
-// ]
-// negativeSet = [
-//   [ 3, 7 ],
-// ]
-// console.log('[[1,2], [8,20]]', '--- result ---', main(inputSet, negativeSet))
-// //
+console.log(' ======= 1. ===========')
+inputSet = [
+  [ 1, 5 ],
+  [ 2, 20 ]
+]
+negativeSet = [
+  [ 3, 7 ],
+]
+console.log('[[1,2], [8,20]]', '--- result ---', main(inputSet, negativeSet))
+//
 
 console.log(' ======= 2. ===========')
 inputSet = [
@@ -139,28 +160,28 @@ negativeSet = [
 ]
 console.log(`[[2], [6,7], [11,20]]`, '--- result ---', main(inputSet, negativeSet))
 
-// console.log(' ======= 3. ===========')
-// inputSet = [
-//   [ 1, 7 ],
-//   [ 5, 20 ],
-//   [ 25, 100 ]
-// ]
-// negativeSet = [
-//   [ 6, 9 ],
-//   [ 8, 11 ],
-//   [ 30, 50 ]
-// ]
-// console.log(`[[1,5], [12,29], [51,100]]`, '--- result ---', main(inputSet, negativeSet))
-//
-// console.log(' ======= 4. ===========')
-// inputSet = [
-//   [ 1, 7 ],
-//   [ 10, 20 ],
-//   [ 25, 100 ],
-// ]
-// negativeSet = [
-//   [ 2, 5 ],
-//   [ 11, 21 ],
-//   [ 30, 50 ]
-// ]
-// console.log(`[[1], [6,7], [10], [25,29], [51,100]]`, '--- result ---', main(inputSet, negativeSet))
+console.log(' ======= 3. ===========')
+inputSet = [
+  [ 1, 7 ],
+  [ 5, 20 ],
+  [ 25, 100 ]
+]
+negativeSet = [
+  [ 6, 9 ],
+  [ 8, 11 ],
+  [ 30, 50 ]
+]
+console.log(`[[1,5], [12,29], [51,100]]`, '--- result ---', main(inputSet, negativeSet))
+
+console.log(' ======= 4. ===========')
+inputSet = [
+  [ 1, 7 ],
+  [ 10, 20 ],
+  [ 25, 100 ],
+]
+negativeSet = [
+  [ 2, 5 ],
+  [ 11, 21 ],
+  [ 30, 50 ],
+]
+console.log(`[[1], [6,7], [10], [25,29], [51,100]]`, '--- result ---', main(inputSet, negativeSet))
